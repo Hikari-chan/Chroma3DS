@@ -70,7 +70,6 @@ void configMenu(bool isSdMode, bool oldPinStatus, u32 oldPinMode)
 {
     const char *multiOptionsText[]  = { "Default EmuNAND: 1( ) 2( ) 3( ) 4( )",
                                         "Screen brightness: 4( ) 3( ) 2( ) 1( )",
-                                        "Splash: Off( ) Before( ) After( ) payloads",
                                         "PIN lock: Off( ) 4( ) 6( ) 8( ) digits",
                                         "New 3DS CPU: Off( ) Clock( ) L2( ) Clock+L2( )",
                                         "Dev. features: Off( ) ErrDisp( ) UNITINFO( )"
@@ -83,6 +82,7 @@ void configMenu(bool isSdMode, bool oldPinStatus, u32 oldPinMode)
                                         "( ) Enable game patching",
                                         "( ) Show NAND or user string in System Settings",
                                         "( ) Show GBA boot screen in patched AGB_FIRM",
+                                        "( ) Display splash screen before boot",
                                         "( ) Patch SVC/service/archive/ARM9 access"
                                       };
 
@@ -92,17 +92,9 @@ void configMenu(bool isSdMode, bool oldPinStatus, u32 oldPinMode)
 
                                           "Select the screen brightness.",
 
-                                          "Enable splash screen support.\n\n"
-                                          "\t* 'Before payloads' displays it\n"
-                                          "before booting payloads\n"
-                                          "(intended for splashes that display\n"
-                                          "button hints).\n\n"
-                                          "\t* 'After payloads' displays it\n"
-                                          "afterwards.",
-
                                           "Activate a PIN lock.\n\n"
                                           "The PIN will be asked each time\n"
-                                          "Luma3DS boots.\n\n"
+                                          "Chroma3DS boots.\n\n"
                                           "4, 6 or 8 digits can be selected.\n\n"
                                           "The ABXY buttons and the directional\n"
                                           "pad buttons can be used as keys.\n\n"
@@ -155,7 +147,7 @@ void configMenu(bool isSdMode, bool oldPinStatus, u32 oldPinMode)
                                           "Refer to the wiki for instructions.",
 
                                           "Use a custom path for the\n"
-                                          "Luma3DS payload.\n\n"
+                                          "Chroma3DS payload.\n\n"
                                           "Refer to the wiki for instructions.",
 
                                           "Enable overriding the region and\n"
@@ -183,6 +175,11 @@ void configMenu(bool isSdMode, bool oldPinStatus, u32 oldPinMode)
                                           "Enable showing the GBA boot screen\n"
                                           "when booting GBA games.",
 
+                                          "Enable splash screen support.\n\n"
+                                          "\t* 'On' displays a splash\n"
+                                          "before booting\n"
+                                          "\t* 'Delays boot by ~3s\n",
+
                                           "Disable SVC, service, archive and ARM9\n"
                                           "exheader access checks.\n\n"
                                           "The service and archive patches\n"
@@ -200,7 +197,6 @@ void configMenu(bool isSdMode, bool oldPinStatus, u32 oldPinMode)
     } multiOptions[] = {
         { .posXs = {19, 24, 29, 34}, .visible = isSdMode },
         { .posXs = {21, 26, 31, 36}, .visible = true },
-        { .posXs = {12, 22, 31, 0}, .visible = true  },
         { .posXs = {14, 19, 24, 29}, .visible = true },
         { .posXs = {17, 26, 32, 44}, .visible = ISN3DS },
         { .posXs = {19, 30, 42, 0}, .visible = true  }
@@ -213,6 +209,7 @@ void configMenu(bool isSdMode, bool oldPinStatus, u32 oldPinMode)
     } singleOptions[] = {
         { .visible = isSdMode },
         { .visible = isSdMode },
+        { .visible = true },
         { .visible = true },
         { .visible = true },
         { .visible = true },

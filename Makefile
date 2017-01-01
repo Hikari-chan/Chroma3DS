@@ -6,7 +6,7 @@ endif
 
 include $(DEVKITARM)/base_tools
 
-name := Luma3DS
+name := Chroma3DS
 revision := $(shell git describe --tags --match v[0-9]* --abbrev=8 | sed 's/-[0-9]*-g/-/i')
 commit := $(shell git rev-parse --short=8 HEAD)
 
@@ -56,7 +56,7 @@ clean:
 	@$(MAKE) -C $(dir_haxloader) clean
 	@$(MAKE) -C $(dir_loader) clean
 	@$(MAKE) -C $(dir_arm9_exceptions) clean
-	@$(MAKE) -C $(dir_arm11_exceptions) clean	
+	@$(MAKE) -C $(dir_arm11_exceptions) clean
 	@$(MAKE) -C $(dir_injector) clean
 	@rm -rf $(dir_out) $(dir_build)
 

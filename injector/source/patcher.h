@@ -19,7 +19,6 @@ enum multiOptions
 {
     DEFAULTEMU = 0,
     BRIGHTNESS,
-    SPLASH,
     PIN,
     NEWCPU,
     DEVOPTIONS
@@ -34,6 +33,7 @@ enum singleOptions
     PATCHGAMES,
     PATCHVERSTRING,
     SHOWGBABOOT,
+    SPLASH,
     PATCHACCESS
 };
 

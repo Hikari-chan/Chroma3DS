@@ -279,7 +279,7 @@ u32 implementSvcGetCFWInfo(u8 *pos, u32 *arm11SvcTable, u32 baseK11VA, u8 **free
         u32 commitHash;
 
         u32 config;
-    } __attribute__((packed)) *info = (struct CfwInfo *)memsearch(*freeK11Space, "LUMA", svcGetCFWInfo_bin_size, 4);
+    } __attribute__((packed)) *info = (struct CfwInfo *)memsearch(*freeK11Space, "CRMA", svcGetCFWInfo_bin_size, 4);
 
     const char *rev = REVISION;
 

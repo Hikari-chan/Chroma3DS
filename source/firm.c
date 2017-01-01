@@ -57,7 +57,7 @@ static inline bool loadFirmFromStorage(FirmwareType firmType)
 
     if(!firmSize) return false;
 
-    if(firmSize <= sizeof(Cxi) + 0x200) error("The FIRM in /luma is not valid.");
+    if(firmSize <= sizeof(Cxi) + 0x200) error("The FIRM in /chroma is not valid.");
 
     if(memcmp(firm, "FIRM", 4) != 0)
     {
@@ -65,12 +65,12 @@ static inline bool loadFirmFromStorage(FirmwareType firmType)
 
         if(fileRead(cetk, firmType == NATIVE_FIRM1X2X ? cetkFiles[0] : cetkFiles[(u32)firmType], sizeof(cetk)) != sizeof(cetk) ||
            !decryptNusFirm((Ticket *)(cetk + 0x140), (Cxi *)firm, firmSize))
-            error("The FIRM in /luma is encrypted or corrupted.");
+            error("The FIRM in /chroma is encrypted or corrupted.");
     }
 
     //Check that the FIRM is right for the console from the ARM9 section address
     if((firm->section[3].offset != 0 ? firm->section[3].address : firm->section[2].address) != (ISN3DS ? (u8 *)0x8006000 : (u8 *)0x8006800))
-        error("The FIRM in /luma is not for this console.");
+        error("The FIRM in /chroma is not for this console.");
 
     return true;
 }
@@ -90,7 +90,7 @@ u32 loadFirm(FirmwareType *firmType, FirmwareSource nandType, bool loadFromStora
         {
             //We can't boot < 3.x EmuNANDs
             if(nandType != FIRMWARE_SYSNAND)
-                error("An old unsupported EmuNAND has been detected.\nLuma3DS is unable to boot it.");
+                error("An old unsupported EmuNAND has been detected.\nChroma3DS is unable to boot it.");
 
             if(isSafeMode) error("SAFE_MODE is not supported on 1.x/2.x FIRM.");
 
@@ -104,7 +104,7 @@ u32 loadFirm(FirmwareType *firmType, FirmwareSource nandType, bool loadFromStora
     if((loadFromStorage || mustLoadFromStorage) && loadFirmFromStorage(*firmType)) firmVersion = 0xFFFFFFFF;
     else
     {
-        if(mustLoadFromStorage) error("An old unsupported FIRM has been detected.\nCopy a firmware.bin in /luma to boot.");
+        if(mustLoadFromStorage) error("An old unsupported FIRM has been detected.\nCopy a firmware.bin in /chroma to boot.");
         if(!decryptExeFs((Cxi *)firm)) error("The CTRNAND FIRM is corrupted.");
         if(ISDEVUNIT) firmVersion = 0xFFFFFFFF;
     }

@@ -82,11 +82,11 @@ static inline bool secureInfoExists(void)
 
 static inline void loadCustomVerString(u16 *out, u32 *verStringSize, u32 currentNand)
 {
-    static const char *paths[] = { "/luma/customversion_sys.txt",
-                                   "/luma/customversion_emu.txt",
-                                   "/luma/customversion_emu2.txt",
-                                   "/luma/customversion_emu3.txt",
-                                   "/luma/customversion_emu4.txt" };
+    static const char *paths[] = { "/chroma/customversion_sys.txt",
+                                   "/chroma/customversion_emu.txt",
+                                   "/chroma/customversion_emu2.txt",
+                                   "/chroma/customversion_emu3.txt",
+                                   "/chroma/customversion_emu4.txt" };
 
     IFile file;
 
@@ -294,10 +294,10 @@ static inline u32 findThrowFatalError(u8* code, u32 size)
 
 static inline bool applyCodeIpsPatch(u64 progId, u8 *code, u32 size)
 {
-    /* Here we look for "/luma/titles/[u64 titleID in hex, uppercase]/code.ips"
+    /* Here we look for "/chroma/titles/[u64 titleID in hex, uppercase]/code.ips"
        If it exists it should be an IPS format patch */
 
-    char path[] = "/luma/titles/0000000000000000/code.ips";
+    char path[] = "/chroma/titles/0000000000000000/code.ips";
     progIdToStr(path + 28, progId);
 
     IFile file;
@@ -353,10 +353,10 @@ exit:
 
 static inline bool loadTitleCodeSection(u64 progId, u8 *code, u32 size)
 {
-    /* Here we look for "/luma/titles/[u64 titleID in hex, uppercase]/code.bin"
+    /* Here we look for "/chroma/titles/[u64 titleID in hex, uppercase]/code.bin"
        If it exists it should be a decrypted and decompressed binary code file */
 
-    char path[] = "/luma/titles/0000000000000000/code.bin";
+    char path[] = "/chroma/titles/0000000000000000/code.bin";
     progIdToStr(path + 28, progId);
 
     IFile file;
@@ -381,10 +381,10 @@ static inline bool loadTitleCodeSection(u64 progId, u8 *code, u32 size)
 
 static inline bool loadTitleLocaleConfig(u64 progId, u8 *regionId, u8 *languageId)
 {
-    /* Here we look for "/luma/titles/[u64 titleID in hex, uppercase]/locale.txt"
+    /* Here we look for "/chroma/titles/[u64 titleID in hex, uppercase]/locale.txt"
        If it exists it should contain, for example, "EUR IT" */
 
-    char path[] = "/luma/titles/0000000000000000/locale.txt";
+    char path[] = "/chroma/titles/0000000000000000/locale.txt";
     progIdToStr(path + 28, progId);
 
     IFile file;
@@ -436,10 +436,10 @@ exit:
 
 static inline bool patchRomfsRedirection(u64 progId, u8* code, u32 size)
 {
-    /* Here we look for "/luma/titles/[u64 titleID in hex, uppercase]/romfs"
+    /* Here we look for "/chroma/titles/[u64 titleID in hex, uppercase]/romfs"
        If it exists it should be a decrypted raw RomFS */
 
-    char path[] = "/luma/titles/0000000000000000/romfs";
+    char path[] = "/chroma/titles/0000000000000000/romfs";
     progIdToStr(path + 28, progId);
 
     IFile file;
@@ -524,6 +524,28 @@ void patchCode(u64 progId, u16 progVer, u8 *code, u32 size)
             )) goto error;
     }
 
+    else if(progId == 0x0004013000002C02LL) //NIM
+    {
+            //Blocking silent auto-updates didn't work; removed.
+            //Always apply - formerly only applied when holding R
+            {
+                static const u8 skipEshopUpdateCheckPattern[] = {
+                    0x30, 0xB5, 0xF1, 0xB0
+                };
+                static const u8 skipEshopUpdateCheckPatch[] = {
+                    0x00, 0x20, 0x08, 0x60, 0x70, 0x47
+                };
+
+                //Skip update checks to access the EShop
+                patchMemory(code, size,
+                    skipEshopUpdateCheckPattern,
+                    sizeof(skipEshopUpdateCheckPattern), 0,
+                    skipEshopUpdateCheckPatch,
+                    sizeof(skipEshopUpdateCheckPatch), 1
+                );
+            }
+    }
+
     else if(progId == 0x0004013000003202LL) //FRIENDS
     {
         static const u8 pattern[] = {
@@ -546,7 +568,7 @@ void patchCode(u64 progId, u16 progVer, u8 *code, u32 size)
              progId == 0x0004001000026000LL || //CHN MSET
              progId == 0x0004001000027000LL || //KOR MSET
              progId == 0x0004001000028000LL) //TWN MSET
-            && CONFIG(PATCHVERSTRING)) 
+            && CONFIG(PATCHVERSTRING))
     {
         static const u16 pattern[] = u"Ve";
         static u16 *patch;
@@ -706,7 +728,7 @@ void patchCode(u64 progId, u16 progVer, u8 *code, u32 size)
 
     else if(progId == 0x0004003000008A02LL && MULTICONFIG(DEVOPTIONS) == 1) //ErrDisp
     {
-        static const u8 pattern[] = { 
+        static const u8 pattern[] = {
             0x00, 0xD0, 0xE5, 0xDB
         },
                         pattern2[] = {
@@ -748,7 +770,7 @@ void patchCode(u64 progId, u16 progVer, u8 *code, u32 size)
                 sizeof(patch), 1
             )) goto error;
     }
-   
+
     if(CONFIG(PATCHGAMES) && (u32)((progId >> 0x20) & 0xFFFFFFEDULL) == 0x00040000)
     {
         u8 regionId = 0xFF,

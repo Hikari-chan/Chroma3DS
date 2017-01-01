@@ -54,6 +54,12 @@ void main(void)
         isSdMode = false;
     }
 
+    //Console ID Swap
+    //Device ID
+    fileRead((void *)0x01FFB804, "DeviceID.bin", 0x4);
+    //CTCert (this has to be split, changing the key at 0x01FFB808 will break TWL)
+    fileRead((void *)0x01FFB818, "CTCert.bin", 0x68);
+
     //Attempt to read the configuration file
     needConfig = readConfig() ? MODIFY_CONFIGURATION : CREATE_CONFIGURATION;
 
@@ -154,19 +160,8 @@ void main(void)
         goto boot;
     }
 
-    u32 splashMode = MULTICONFIG(SPLASH);
-
-    if(splashMode == 1 && loadSplash()) pressed = HID_PAD;
-
-    if((pressed & (BUTTON_START | BUTTON_L1)) == BUTTON_START)
-    {
-        payloadMenu();
-        pressed = HID_PAD;
-    }
-    else if(((pressed & SINGLE_PAYLOAD_BUTTONS) && !(pressed & (BUTTON_L1 | BUTTON_R1 | BUTTON_A))) ||
-            ((pressed & L_PAYLOAD_BUTTONS) && (pressed & BUTTON_L1))) loadPayload(pressed, NULL);
-
-    if(splashMode == 2) loadSplash();
+    u32 splashMode = CONFIG(SPLASH);
+    if(splashMode == 1) loadSplash();
 
     //If booting from CTRNAND, always use SysNAND
     if(!isSdMode) nandType = FIRMWARE_SYSNAND;
