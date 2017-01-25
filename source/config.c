@@ -186,7 +186,7 @@ void configMenu(bool isSdMode, bool oldPinStatus, u32 oldPinMode)
                                           "don't work on New 3DS FIRMs between\n"
                                           "9.3 and 10.4.\n\n"
                                           "Only change this if you know what you\n"
-                                          "are doing!",
+                                          "are doing!"
                                        };
 
     struct multiOption {
