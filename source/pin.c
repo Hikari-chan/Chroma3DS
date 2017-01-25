@@ -66,7 +66,7 @@ void newPin(bool allowSkipping, u32 pinMode)
     {
         if(reset)
         {
-            for(u32 i = 0; i < cnt; i++) 
+            for(u32 i = 0; i < cnt; i++)
                 drawCharacter((char)enteredPassword[i], true, 10 + (16 + 2 * i) * SPACING_X, 10 + 3 * SPACING_Y, COLOR_BLACK);
 
             cnt = 0;
@@ -122,7 +122,7 @@ void newPin(bool allowSkipping, u32 pinMode)
         error("Error writing the PIN file");
 }
 
-bool verifyPin(u32 pinMode, bool hidePin)
+bool verifyPin(u32 pinMode)
 {
     PinData pin;
 
@@ -171,7 +171,7 @@ bool verifyPin(u32 pinMode, bool hidePin)
     {
         if(reset)
         {
-            for(u32 i = 0; i < cnt; i++) 
+            for(u32 i = 0; i < cnt; i++)
                 drawCharacter((char)enteredPassword[i], true, 10 + (16 + 2 * i) * SPACING_X, 10 + 3 * SPACING_Y, COLOR_BLACK);
 
             cnt = 0;
@@ -200,8 +200,7 @@ bool verifyPin(u32 pinMode, bool hidePin)
         //Add character to password
         enteredPassword[cnt] = (u8)pinKeyToLetter(pressed);
         //Visualize character on screen
-        char display = hidePin ? '*' : (char)enteredPassword[cnt];
-        drawCharacter(display, true, 10 + (16 + 2 * cnt) * SPACING_X, 10 + 3 * SPACING_Y, COLOR_WHITE);
+        drawCharacter((char)enteredPassword[cnt], true, 10 + (16 + 2 * cnt) * SPACING_X, 10 + 3 * SPACING_Y, COLOR_WHITE);
 
         if(++cnt < lengthBlock[0]) continue;
 
@@ -212,7 +211,7 @@ bool verifyPin(u32 pinMode, bool hidePin)
         {
             reset = true;
 
-            drawString("Wrong PIN, try again", true, 10, 10 + 5 * SPACING_Y, COLOR_RED); 
+            drawString("Wrong PIN, try again", true, 10, 10 + 5 * SPACING_Y, COLOR_RED);
         }
     }
 
